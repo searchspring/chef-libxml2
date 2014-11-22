@@ -21,16 +21,30 @@
 
 include_recipe node['libxml2']['package_manager']
 
-node['libxml2']['packages'].each do |pkg|
-	package pkg do
-		action :install
+if node['libxml2']['compile_time'] == true
+	node['libxml2']['packages'].each do |pkg|
+		package pkg do
+			action :nothing
+		end.run_action(:install)
 	end
-end
-
-if node['libxml2']['install_devel'] == true
+	
 	node['libxml2']['devel_packages'].each do |pkg|
 		package pkg do
+			action :nothing
+		end.run_action(:install)
+	end
+else
+	node['libxml2']['packages'].each do |pkg|
+		package pkg do
 			action :install
+		end
+	end
+	
+	if node['libxml2']['install_devel'] == true
+		node['libxml2']['devel_packages'].each do |pkg|
+			package pkg do
+				action :install
+			end
 		end
 	end
 end

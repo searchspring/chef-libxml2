@@ -4,7 +4,7 @@ maintainer_email 'greg@thesub.net'
 license          'Apache V2'
 description      'Installs/Configures libxml2'
 long_description 'Installs/Configures libxml2'
-version          '0.1.0'
+version          '0.1.1'
 
 depends          'yum'
 depends          'apt'

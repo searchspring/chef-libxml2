@@ -4,25 +4,21 @@ describe 'libxml2::default' do
   before do
   end
   platforms = {
-    'centos-6.5' => {
+    'centos-6.4' => {
       'packages' => [
         'libxml2'
       ],
       'devel_packages' => [
         'libxml2-devel'
-      ],
-      :plaform_family => 'rhel',
-      :package_manager => 'yum'
+      ]
     },
-    'amazon' => {
+    'amazon-2013.09' => {
       'packages' => [
         'libxml2'
       ],
       'devel_packages' => [
         'libxml2-devel'
-      ],
-      :plaform_family => 'rhel',
-      :package_manager => 'yum'
+      ]
     },
     'ubuntu-12.04' => {
       'packages' => [
@@ -30,19 +26,17 @@ describe 'libxml2::default' do
       ],
       'devel_packages' => [
         'libxml2-dev'
-      ],
-      :plaform_family => 'debian',
-      :package_manager => 'apt'
+      ]
     }
   }
   platforms.each do |platform,data|
     (os,version) = platform.split('-')
     context "On #{os} #{version}" do
       let(:chef_run) do
-        runner = ChefSpec::SoloRunner.new
-        runner.node.set[:platform] = os
-        runner.node.set[:version] = version
-        runner.node.set[:plaform_family] = data[:plaform_family]
+        runner = ChefSpec::SoloRunner.new(
+          platform: os,
+          version: version
+        )
         runner.converge(described_recipe) 
       end
       data['packages'].each do |pkg|
@@ -52,6 +46,27 @@ describe 'libxml2::default' do
       end
       data['devel_packages'].each do |pkg|
         it "should install #{pkg}" do
+          expect(chef_run).to install_package pkg
+        end
+      end
+    end
+
+    context "Compile time option true" do
+      let(:chef_run) do
+        runner = ChefSpec::SoloRunner.new(
+          platform: os,
+          version: version
+        )
+        runner.node.set['libxml2']['compile_time'] = true
+        runner.converge(described_recipe)
+      end
+      data['packages'].each do |pkg|
+        it "should nothing #{pkg}" do
+          expect(chef_run).to install_package pkg
+        end
+      end
+      data['devel_packages'].each do |pkg|
+        it "should nothing #{pkg}" do
           expect(chef_run).to install_package pkg
         end
       end
