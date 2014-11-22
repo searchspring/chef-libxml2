@@ -29,12 +29,12 @@ Attributes
 
 If you would like to avoid installing the development package, set the following to false.
 
-default['libxml2']['install_devel'] = true
+* default['libxml2']['install_devel'] = true
 
 If you want libxml2 to be installed at compile time, for example if you need
 libxml2 installed for a chef_gem, set the following to true.
 
-default['libxml2']['compile_time'] = false
+* default['libxml2']['compile_time'] = false
 
 
 License and Author
